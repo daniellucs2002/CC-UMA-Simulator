@@ -1,0 +1,23 @@
+usage
+----------
+
+@param1 ./coherence: executable file name
+@param2 "protocol": either MESI or Dragon
+@param3 "input_file": bodytrack, blackscholes or fluidanimate
+@param4 "cache_size": in bytes
+@param5 "associativity"
+@param6 "block_size": in bytes
+
+
+implementations
+----------
+
+MESI invalidation-based cache coherence protocol
+Dragon 4-state update-based cache coherence protocol
+
+
+example
+----------
+
+./coherence MESI bodytrack 1024 1 16
+
