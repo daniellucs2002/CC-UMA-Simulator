@@ -2,10 +2,11 @@
 
 #include <memory>
 #include <list>
+#include <limits>
 
 class Observer {
 public:
-    virtual void update() = 0;
+    virtual bool update(unsigned long now) = 0;
     virtual ~Observer() = default;
 };
 
@@ -14,9 +15,9 @@ class Timer {
     std::list<std::shared_ptr<Observer>> m_observers;
 
 public:
-    Timer() : m_ticks(0) {}
+    Timer() : m_ticks(std::numeric_limits<unsigned long>::max()) {}
     void attach(std::shared_ptr<Observer> observer);
-    void tick();
-    void notify();
+    bool tick();
+    bool notify(unsigned long now);
     unsigned long currentTime() const;
 };

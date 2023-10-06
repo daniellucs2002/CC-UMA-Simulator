@@ -1,6 +1,10 @@
+#pragma once
+#include <string>
 
 namespace CacheConfig {
-    int cachesize = 1024;
-    int associativity = 1;
-    int blocksize = 16;
+    extern int cachesize;
+    extern int associativity;
+    extern int blocksize;
 }
+
+extern std::string root_path;

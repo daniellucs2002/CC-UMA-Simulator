@@ -9,6 +9,7 @@ include_directories(${CMAKE_SOURCE_DIR})
 
 set(SOURCES
     main.cpp
+    config.cpp
     timer/Timer.cpp
     cpu/CPU.cpp
 )

@@ -28,11 +28,18 @@ int main(int argc, char* argv[]) {
     const int num_cpus = 4;
     // Create CPUs using make_shared and attach to timer
     for (int i = 0; i < num_cpus; ++i) {
-        auto cpu = std::make_shared<CPU>(i);
+        auto cpu = std::make_shared<CPU>(i, filename);
         timer->attach(cpu);
     }
 
+    while (true) {
+        // start of a new clock cycle, notify all
+        if (!timer->tick())
+            break;
+        // std::cout << "End of cycle " << timer->currentTime() << "..." << std::endl;
+    }
 
+    std::cout << "End of simulation at cycle " << timer->currentTime() << "..." << std::endl;
 
     return 0;
 }
