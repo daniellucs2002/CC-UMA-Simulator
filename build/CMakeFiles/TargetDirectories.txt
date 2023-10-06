@@ -1,3 +1,0 @@
-/home/lujunchen/cs4223/src/build/CMakeFiles/coherence.dir
-/home/lujunchen/cs4223/src/build/CMakeFiles/edit_cache.dir
-/home/lujunchen/cs4223/src/build/CMakeFiles/rebuild_cache.dir

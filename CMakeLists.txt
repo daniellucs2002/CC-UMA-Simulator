@@ -10,7 +10,7 @@ include_directories(${CMAKE_SOURCE_DIR})
 set(SOURCES
     main.cpp
     timer/Timer.cpp
+    cpu/CPU.cpp
 )
 
 add_executable(coherence ${SOURCES})
-

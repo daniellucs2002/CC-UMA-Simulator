@@ -1,9 +1,12 @@
+#pragma once
+
 #include <memory>
 #include <list>
 
 class Observer {
 public:
     virtual void update() = 0;
+    virtual ~Observer() = default;
 };
 
 class Timer {
@@ -17,4 +20,3 @@ public:
     void notify();
     unsigned long currentTime() const;
 };
-
