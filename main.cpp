@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include <cstring>
-#include "timer/Timer.h"
+#include "timer/Timer.hpp"
 #include "cpu/CPU.hpp"
 #include "config.hpp"
 

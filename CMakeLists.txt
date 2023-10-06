@@ -12,6 +12,8 @@ set(SOURCES
     config.cpp
     timer/Timer.cpp
     cpu/CPU.cpp
+    traces/Trace.cpp
+    cache/Cache.cpp
 )
 
 add_executable(coherence ${SOURCES})

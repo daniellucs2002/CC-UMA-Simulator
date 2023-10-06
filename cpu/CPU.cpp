@@ -1,5 +1,6 @@
 #include "cpu/CPU.hpp"
 #include "config.hpp"
+#include "traces/Trace.hpp"
 
 extern string root_path;
 
@@ -16,8 +17,11 @@ bool CPU::update(unsigned long now) {
     string line;
     if (!this->inFile.is_open())
         return false;
-    if (getline(inFile, line))
+    if (getline(inFile, line)) {
+        auto instruction = Trace::createInstruction(line);
+        // instruction->execute();
         return true;
+    }
     // print out the end of execution time for the current core
     cout << "[CPU " + to_string(this->cpu_id) + "] Finished at cycle " << now << endl;
     inFile.close();

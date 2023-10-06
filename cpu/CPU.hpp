@@ -1,4 +1,4 @@
-#include "timer/Timer.h"
+#include "timer/Timer.hpp"
 #include <iostream>
 #include <fstream>
 #include <cassert>

@@ -1,4 +1,4 @@
-#include "timer/Timer.h"
+#include "timer/Timer.hpp"
 
 void Timer::attach(std::shared_ptr<Observer> observer) {
     m_observers.push_back(observer);
