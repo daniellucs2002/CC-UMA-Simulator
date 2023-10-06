@@ -10,6 +10,10 @@ CPU::CPU(int id, string filename) {
     // cout << "Constructing CPU " << this->cpu_id << "..." << endl;
     this->inFile.open(this->filename);
     assert(this->inFile.is_open());
+
+    // create the unique_ptr to L1 data cache
+    this->cache = std::make_shared<Cache>(CacheConfig::cachesize,
+        CacheConfig::associativity, CacheConfig::blocksize);
 }
 
 bool CPU::update(unsigned long now) {
@@ -19,7 +23,7 @@ bool CPU::update(unsigned long now) {
         return false;
     if (getline(inFile, line)) {
         auto instruction = Trace::createInstruction(line);
-        // instruction->execute();
+        instruction->execute(this->cache);
         return true;
     }
     // print out the end of execution time for the current core

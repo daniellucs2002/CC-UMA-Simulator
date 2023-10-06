@@ -14,6 +14,8 @@ set(SOURCES
     cpu/CPU.cpp
     traces/Trace.cpp
     cache/Cache.cpp
+    cache/CacheSet.cpp
+    cache/CacheLine.cpp
 )
 
 add_executable(coherence ${SOURCES})

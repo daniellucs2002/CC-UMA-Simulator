@@ -1,15 +1,15 @@
 #include "traces/Trace.hpp"
 
-void Instruction0::execute() const {
-    std::cout << "Executing Instruction 0" << std::endl;
+void Instruction0::execute(std::shared_ptr<Cache> cache) const {
+
 }
 
-void Instruction1::execute() const {
-    std::cout << "Executing Instruction 1" << std::endl;
+void Instruction1::execute(std::shared_ptr<Cache> cache) const {
+
 }
 
-void Instruction2::execute() const {
-    std::cout << "Executing Instruction 2" << std::endl;
+void Instruction2::execute(std::shared_ptr<Cache> cache) const {
+
 }
 
 std::unique_ptr<Trace> Trace::createInstruction(const std::string & line) {
