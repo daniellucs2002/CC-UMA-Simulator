@@ -1,7 +1,10 @@
 #pragma once
-#include <vector>
-#include <iostream>
-#include "CacheSet.hpp"
+
+struct CacheAddress {
+    unsigned int tag;
+    unsigned int setIndex;
+    unsigned int blockOffset;
+};
 
 class Cache {
 private:
@@ -10,7 +13,7 @@ private:
     int blocksize;
     int set;  // set number
 
-    std::vector<CacheSet> sets;
+    CacheAddress parseAddress(unsigned int address);
 
 public:
     Cache(int cachesize, int associativity, int blocksize);
