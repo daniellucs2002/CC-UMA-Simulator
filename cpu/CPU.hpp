@@ -9,6 +9,7 @@ using namespace std;
 class CPU : public Observer {
 private:
     int cpu_id;
+    int halt;  // number of cycles, for a blocking cache
     string filename;
     std::ifstream inFile;  // trace file for the current cpu core
 

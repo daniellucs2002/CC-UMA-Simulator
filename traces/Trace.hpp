@@ -5,7 +5,7 @@
 
 class Trace {
 public:
-    virtual void execute(std::shared_ptr<Cache> cache) const = 0;
+    virtual unsigned int execute(std::shared_ptr<Cache> cache) const = 0;
     virtual ~Trace() {}
 
     // Factory method to create instruction objects based on input string
@@ -19,7 +19,7 @@ private:
 
 public:
     Instruction0(int val) : address(val) { }
-    void execute(std::shared_ptr<Cache> cache) const override;
+    unsigned int execute(std::shared_ptr<Cache> cache) const override;
 };
 
 // store instruction
@@ -29,7 +29,7 @@ private:
 
 public:
     Instruction1(int val) : address(val) { }
-    void execute(std::shared_ptr<Cache> cache) const override;
+    unsigned int execute(std::shared_ptr<Cache> cache) const override;
 };
 
 // other instructions
@@ -39,5 +39,5 @@ private:
 
 public:
     Instruction2(int val) : time(val) { }
-    void execute(std::shared_ptr<Cache> cache) const override;
+    unsigned int execute(std::shared_ptr<Cache> cache) const override;
 };

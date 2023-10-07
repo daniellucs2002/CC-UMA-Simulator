@@ -1,18 +1,15 @@
 #include "traces/Trace.hpp"
 
-void Instruction0::execute(std::shared_ptr<Cache> cache) const {
-    unsigned int cycles = cache->read_addr(this->address);
-    std::cout << "Load: " << cycles << std::endl;
+unsigned int Instruction0::execute(std::shared_ptr<Cache> cache) const {
+    return cache->read_addr(this->address);
 }
 
-void Instruction1::execute(std::shared_ptr<Cache> cache) const {
-    unsigned int cycles = cache->write_addr(this->address);
-    std::cout << "Store: " << cycles << std::endl;
+unsigned int Instruction1::execute(std::shared_ptr<Cache> cache) const {
+    return cache->write_addr(this->address);
 }
 
-void Instruction2::execute(std::shared_ptr<Cache> cache) const {
-    unsigned int cycles = this->time;
-    std::cout << "Exec: " << cycles << std::endl;
+unsigned int Instruction2::execute(std::shared_ptr<Cache> cache) const {
+    return this->time;
 }
 
 std::unique_ptr<Trace> Trace::createInstruction(const std::string & line) {
