@@ -1,4 +1,5 @@
 #include "timer/Timer.hpp"
+#include "config.hpp"
 
 void Timer::attach(std::shared_ptr<Observer> observer) {
     m_observers.push_back(observer);
@@ -14,7 +15,7 @@ bool Timer::notify(unsigned long now) {
     for (auto & observer : m_observers)
         if (!observer->update(now))
             cnt++;
-    return (cnt != 4);
+    return (cnt != cpunums);
 }
 
 unsigned long Timer::currentTime() const {

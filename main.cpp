@@ -6,7 +6,7 @@
 #include "config.hpp"
 
 int main(int argc, char* argv[]) {
-    assert(argc == 6);
+    assert(argc == 7);
 
     CacheConfig::cachesize = std::stoi(argv[3]);
     CacheConfig::associativity = std::stoi(argv[4]);
@@ -25,9 +25,9 @@ int main(int argc, char* argv[]) {
     
     std::shared_ptr<Timer> timer = std::make_shared<Timer>();
 
-    const int num_cpus = 4;
+    cpunums = std::stoi(argv[6]);  // passed as a command line argument
     // Create CPUs using make_shared and attach to timer
-    for (int i = 0; i < num_cpus; ++i) {
+    for (int i = 0; i < cpunums; ++i) {
         auto cpu = std::make_shared<CPU>(i, filename);
         timer->attach(cpu);
     }

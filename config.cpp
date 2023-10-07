@@ -1,5 +1,7 @@
 #include "config.hpp"
 
+int cpunums = 4;
+
 namespace CacheConfig {
     int cachesize = 1024;
     int associativity = 1;
@@ -8,3 +10,9 @@ namespace CacheConfig {
 }
 
 std::string root_path = "/home/lujunchen/cs4223/";
+
+namespace TimeConfig {
+    int CacheHit = 1;
+    int LoadBlockFromMem = 100;
+    int WriteBackMem = 100;
+}
