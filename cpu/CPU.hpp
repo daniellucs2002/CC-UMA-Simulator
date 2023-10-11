@@ -19,4 +19,5 @@ public:
     CPU(int id, string filename);
     bool update(unsigned long now) override;
     ~CPU();
+    std::shared_ptr<Cache> read_cache() {return this->cache;}
 };

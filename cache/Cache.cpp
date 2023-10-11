@@ -27,14 +27,16 @@ CacheAddress Cache::parseAddress(unsigned int address) {
     return result;
 }
 
+// event triggered: PrRd
 unsigned int Cache::read_addr(unsigned int address) {
     CacheAddress parse = this->parseAddress(address);
     if (this->sets[parse.setIndex].is_hit(parse.tag)) {
         // read hit, priority of the visited line has been boosted
         return TimeConfig::CacheHit;
     } else {
-        // read miss, load the cache line from memory
         return TimeConfig::CacheHit + this->sets[parse.setIndex].load_line(parse.tag);
+        // read miss, ask other cpu cores, load the cache line from memory or other caches
+        
     }
 }
 

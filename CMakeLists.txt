@@ -13,9 +13,11 @@ set(SOURCES
     timer/Timer.cpp
     cpu/CPU.cpp
     traces/Trace.cpp
+    bus/Bus.cpp
     cache/Cache.cpp
     cache/CacheSet.cpp
     cache/CacheLine.cpp
+    cache/CacheController.cpp
 )
 
 add_executable(coherence ${SOURCES})

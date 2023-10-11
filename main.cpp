@@ -3,6 +3,8 @@
 #include <cstring>
 #include "timer/Timer.hpp"
 #include "cpu/CPU.hpp"
+#include "bus/Bus.hpp"
+#include "cache/CacheController.hpp"
 #include "config.hpp"
 
 int main(int argc, char* argv[]) {
@@ -24,12 +26,17 @@ int main(int argc, char* argv[]) {
     }
     
     std::shared_ptr<Timer> timer = std::make_shared<Timer>();
+    std::shared_ptr<Bus> bus = std::make_shared<Bus>();
 
     cpunums = std::stoi(argv[6]);  // passed as a command line argument
     // Create CPUs using make_shared and attach to timer
     for (int i = 0; i < cpunums; ++i) {
         auto cpu = std::make_shared<CPU>(i, filename);
         timer->attach(cpu);
+        // create corresponding cache controllers
+        auto controller = std::make_shared<CacheController>(i, bus, cpu->read_cache());
+        cpu->read_cache()->setController(controller);
+        bus->registerCache(controller);
     }
 
     while (true) {

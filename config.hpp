@@ -17,3 +17,21 @@ namespace TimeConfig {
     extern int LoadBlockFromMem;
     extern int WriteBackMem;
 }
+
+struct CacheAddress {
+    unsigned int tag;
+    unsigned int setIndex;
+    unsigned int blockOffset;
+};
+
+enum MessageType {
+    READ_REQUEST,
+    READ_REPLY,
+};
+
+struct Message {
+    int senderId;
+    MessageType type;
+    CacheAddress address;
+    bool success;
+};
