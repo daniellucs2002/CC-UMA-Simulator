@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <memory>
 #include <sstream>
@@ -5,11 +6,12 @@
 
 class Trace {
 public:
+    virtual unsigned int detect(std::shared_ptr<Cache> cache) const = 0;
     virtual unsigned int execute(std::shared_ptr<Cache> cache) const = 0;
     virtual ~Trace() {}
 
     // Factory method to create instruction objects based on input string
-    static std::unique_ptr<Trace> createInstruction(const std::string & line);
+    static std::shared_ptr<Trace> createInstruction(const std::string & line);
 };
 
 // load instruction
@@ -20,6 +22,7 @@ private:
 public:
     Instruction0(int val) : address(val) { }
     unsigned int execute(std::shared_ptr<Cache> cache) const override;
+    unsigned int detect(std::shared_ptr<Cache> cache) const override;
 };
 
 // store instruction
@@ -30,6 +33,7 @@ private:
 public:
     Instruction1(int val) : address(val) { }
     unsigned int execute(std::shared_ptr<Cache> cache) const override;
+    unsigned int detect(std::shared_ptr<Cache> cache) const override;
 };
 
 // other instructions
@@ -40,4 +44,5 @@ private:
 public:
     Instruction2(int val) : time(val) { }
     unsigned int execute(std::shared_ptr<Cache> cache) const override;
+    unsigned int detect(std::shared_ptr<Cache> cache) const override;
 };

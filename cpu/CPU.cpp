@@ -25,12 +25,18 @@ bool CPU::update(unsigned long now) {
     if (this->halt == 0) {
         if (getline(inFile, line)) {
             auto instruction = Trace::createInstruction(line);
-            this->halt = instruction->execute(this->cache);
-            this->halt--;
+            this->halt = instruction->detect(this->cache);
+            // record the instruction into the object for later execution
+            this->inst = instruction;
+            --this->halt;
+            if (this->halt == 0 && this->inst.get() != nullptr)
+                this->inst->execute(this->cache);
             return true;
         }
     } else {
-        this->halt--;
+        --this->halt;
+        if (this->halt == 0 && this->inst.get() != nullptr)
+            this->inst->execute(this->cache);
         return true;
     }
     

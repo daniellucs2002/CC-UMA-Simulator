@@ -20,10 +20,12 @@ private:
 
     std::weak_ptr<CacheController> controller;
 
-    CacheAddress parseAddress(unsigned int address);
+    CacheAddress parseAddress(unsigned int address) const;
 
 public:
     Cache(int cachesize, int associativity, int blocksize);
+
+    unsigned int detect_addr(unsigned int address) const;
 
     // input: address to be visited
     // output: cycles needed for completion

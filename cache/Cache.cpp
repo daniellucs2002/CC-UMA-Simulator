@@ -14,7 +14,7 @@ Cache::Cache(int cachesize, int associativity, int blocksize) {
         sets.push_back(CacheSet(this->associativity));
 }
 
-CacheAddress Cache::parseAddress(unsigned int address) {
+CacheAddress Cache::parseAddress(unsigned int address) const {
     int blockOffsetBits = std::log2(this->blocksize);
     int setIndexBits = std::log2(this->set);
     unsigned int blockOffsetMask = (1 << blockOffsetBits) - 1;
@@ -49,4 +49,9 @@ unsigned int Cache::write_addr(unsigned int address) {
         // write miss, apply write allocate policy
         return TimeConfig::CacheHit + this->sets[parse.setIndex].load_line(parse.tag, true);
     }
+}
+
+unsigned int Cache::detect_addr(unsigned int address) const {
+    CacheAddress parse = this->parseAddress(address);
+    return this->sets[parse.setIndex].is_hit_readonly(parse.tag);
 }

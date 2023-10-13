@@ -9,7 +9,7 @@ CacheSet::CacheSet(int assoc) {
         this->lines.push_back(CacheLine());
 }
 
-bool CacheSet::is_full() {
+bool CacheSet::is_full() const {
     for (int i = 0; i < this->associativity; ++i)
         if (this->lines[i].is_valid == false)
             return false;
@@ -28,6 +28,25 @@ bool CacheSet::is_hit(unsigned int tag, bool isWrite) {
             return true;
         }
     return false;
+}
+
+// define const functions when necessary
+int CacheSet::is_hit_readonly(unsigned int tag) const {
+    for (int i = 0; i < this->associativity; ++i)
+        if (this->lines[i].is_valid && this->lines[i].tag == tag)
+            return TimeConfig::CacheHit;
+    // several possible cases in cache miss
+    if (!is_full()) {
+        return TimeConfig::LoadBlockFromMem + TimeConfig::CacheHit;
+    } else {
+        // similarly, only read operations
+        int evict_idx = this->idx.back();
+        bool writeback = this->lines[evict_idx].is_dirty;
+        if (writeback)
+            return TimeConfig::LoadBlockFromMem + TimeConfig::WriteBackMem + TimeConfig::CacheHit;
+        else
+            return TimeConfig::LoadBlockFromMem + TimeConfig::CacheHit;
+    }
 }
 
 int CacheSet::load_line(unsigned int tag, bool isWrite) {

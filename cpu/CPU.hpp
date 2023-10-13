@@ -1,8 +1,10 @@
 #include "timer/Timer.hpp"
 #include "cache/Cache.hpp"
+#include "traces/Trace.hpp"
 #include <iostream>
 #include <fstream>
 #include <cassert>
+#include <memory>
 
 using namespace std;
 
@@ -14,6 +16,8 @@ private:
     std::ifstream inFile;  // trace file for the current cpu core
 
     std::shared_ptr<Cache> cache;  // L1 data cache
+
+    std::shared_ptr<Trace> inst;
 
 public:
     CPU(int id, string filename);
