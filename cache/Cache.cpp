@@ -1,6 +1,8 @@
 #include "Cache.hpp"
 #include "config.hpp"
 #include <cmath>
+#include <cassert>
+#include <limits>
 
 using namespace std;
 
@@ -53,5 +55,16 @@ unsigned int Cache::write_addr(unsigned int address) {
 
 unsigned int Cache::detect_addr(unsigned int address) const {
     CacheAddress parse = this->parseAddress(address);
-    return this->sets[parse.setIndex].is_hit_readonly(parse.tag);
+    if (this->sets[parse.setIndex].is_hit_readonly(parse.tag)) {
+        return TimeConfig::CacheHit;
+    } else {
+        // send request message into bus on cache miss
+        Message msg;
+        msg.senderId = this->controller.lock()->getId();
+        msg.address = parse;  msg.stayInBus = -1;
+        this->controller.lock()->sendRequest(msg);
+        return std::numeric_limits<int>::max();
+    }
+    assert(false);
+    return 0;
 }

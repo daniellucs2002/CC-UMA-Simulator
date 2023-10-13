@@ -25,13 +25,11 @@ struct CacheAddress {
 };
 
 enum MessageType {
-    READ_REQUEST,
-    READ_REPLY,
+
 };
 
 struct Message {
     int senderId;
-    MessageType type;
+    int stayInBus;
     CacheAddress address;
-    bool success;
 };

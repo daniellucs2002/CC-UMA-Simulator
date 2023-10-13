@@ -20,8 +20,10 @@ bool Timer::notify(unsigned long now) {
             cnt++;
 
     // step2: broadcast requests and process requests
+    this->getBus()->propagateRequests();
 
     // step3: receive processing results and decide changes
+    this->getBus()->propagateReplies();
 
     return (cnt != cpunums);
 }

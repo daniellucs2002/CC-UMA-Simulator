@@ -5,11 +5,14 @@
 #include "CacheController.hpp"
 #include "CacheSet.hpp"
 #include "config.hpp"
+#include "cpu/CPU.hpp"
 
 class CacheController;
+class CPU;
 
 // This is a blocking cache!
 class Cache {
+    friend class CacheController;
 private:
     int cachesize;
     int associativity;
@@ -19,6 +22,7 @@ private:
     std::vector<CacheSet> sets;
 
     std::weak_ptr<CacheController> controller;
+    std::weak_ptr<CPU> cpu;
 
     CacheAddress parseAddress(unsigned int address) const;
 
@@ -37,5 +41,9 @@ public:
 
     void setController(const std::shared_ptr<CacheController>& ctrl) {
         this->controller = ctrl;
+    }
+
+    void setCPU(const std::shared_ptr<CPU>& cpu) {
+        this->cpu = cpu;
     }
 };

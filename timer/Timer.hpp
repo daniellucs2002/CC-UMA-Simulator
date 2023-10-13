@@ -3,16 +3,16 @@
 #include <memory>
 #include <list>
 #include <limits>
+#include "bus/Bus.hpp"
+#include "cpu/CPU.hpp"
 
-class Observer {
-public:
-    virtual bool update(unsigned long now) = 0;
-    virtual ~Observer() = default;
-};
+class Observer;
+class Bus;
 
 class Timer {
     unsigned long m_ticks;
     std::list<std::shared_ptr<Observer>> m_observers;
+    std::shared_ptr<Bus> bus;
 
 public:
     Timer() : m_ticks(std::numeric_limits<unsigned long>::max()) {}
@@ -20,4 +20,7 @@ public:
     bool tick();
     bool notify(unsigned long now);
     unsigned long currentTime() const;
+
+    void setBus(std::shared_ptr<Bus> bus) {this->bus = bus;}
+    std::shared_ptr<Bus> getBus() {return this->bus;}
 };
