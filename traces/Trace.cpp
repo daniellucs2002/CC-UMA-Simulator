@@ -1,4 +1,5 @@
 #include "traces/Trace.hpp"
+#include "config.hpp"
 
 unsigned int Instruction0::execute(std::shared_ptr<Cache> cache) const {
     return cache->read_addr(this->address);

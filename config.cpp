@@ -1,6 +1,7 @@
 #include "config.hpp"
 
 int cpunums = 4;
+std::unordered_set<CacheAddress> insts;
 
 namespace CacheConfig {
     int cachesize = 1024;

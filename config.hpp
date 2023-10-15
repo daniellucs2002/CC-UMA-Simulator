@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <unordered_set>
 
 extern int cpunums;
 
@@ -21,8 +22,23 @@ namespace TimeConfig {
 struct CacheAddress {
     unsigned int tag;
     unsigned int setIndex;
-    unsigned int blockOffset;
+
+    bool operator==(const CacheAddress& other) const {
+        return this->tag == other.tag && this->setIndex == other.setIndex;
+    }
 };
+
+namespace std {
+    template <>
+    struct hash<CacheAddress> {
+        std::size_t operator()(const CacheAddress& address) const {
+            size_t hash = 17;
+            hash = hash * 31 + std::hash<unsigned int>{}(address.tag);
+            hash = hash * 31 + std::hash<unsigned int>{}(address.setIndex);
+            return hash;
+        }
+    };
+}
 
 enum MessageType {
 
@@ -33,3 +49,5 @@ struct Message {
     int stayInBus;
     CacheAddress address;
 };
+
+extern std::unordered_set<CacheAddress> insts;

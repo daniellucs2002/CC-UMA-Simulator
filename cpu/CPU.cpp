@@ -6,6 +6,7 @@ extern string root_path;
 
 CPU::CPU(int id, string filename) {
     this->cpu_id = id;
+    this->inst = nullptr;
     this->halt = 0;  // default, current instruction lasts for one cycle
     this->filename = root_path + filename + to_string(id) + ".data";
     // cout << "Constructing CPU " << this->cpu_id << "..." << endl;
@@ -23,20 +24,63 @@ bool CPU::update(unsigned long now) {
     if (!this->inFile.is_open())
         return false;
     if (this->halt == 0) {
+        if (this->inst != nullptr) {
+            // an instruction that hasn't been processed
+            CacheAddress parse = this->cache->parseAddress(this->inst->getVal());
+            if (insts.find(parse) != insts.end()) {
+                // which means the CacheAddress is still conflicting
+                return true;
+            } else {
+                // issue the stored instruction before reading another line from file
+                insts.insert(parse);
+                this->halt = this->inst->detect(this->cache);
+                --this->halt;
+                if (this->halt == 0 && this->inst.get() != nullptr) {
+                    this->inst->execute(this->cache);
+                    insts.erase(parse);
+                    this->inst = nullptr;
+                }
+                return true;
+            }
+        }
         if (getline(inFile, line)) {
             auto instruction = Trace::createInstruction(line);
+            if (instruction->identify() == 0 || instruction->identify() == 1) {
+                CacheAddress parse = this->cache->parseAddress(instruction->getVal());
+                if (insts.find(parse) != insts.end()) {
+                    // in case of conflicting CacheAddress, halt the current core and store the instruction
+                    this->halt = 0;
+                    this->inst = instruction;
+                    return true;
+                }
+                insts.insert(parse);
+            }
             this->halt = instruction->detect(this->cache);
             // record the instruction into the object for later execution
             this->inst = instruction;
             --this->halt;
-            if (this->halt == 0 && this->inst.get() != nullptr)
+            if (this->halt == 0 && this->inst.get() != nullptr) {
                 this->inst->execute(this->cache);
+                if (this->inst->identify() == 0 || this->inst->identify() == 1) {
+                    CacheAddress parse = this->cache->parseAddress(this->inst->getVal());
+                    assert(insts.find(parse) != insts.end());  // must exist
+                    insts.erase(parse);
+                }
+                this->inst = nullptr;
+            }
             return true;
         }
     } else {
         --this->halt;
-        if (this->halt == 0 && this->inst.get() != nullptr)
+        if (this->halt == 0 && this->inst.get() != nullptr) {
             this->inst->execute(this->cache);
+            if (this->inst->identify() == 0 || this->inst->identify() == 1) {
+                CacheAddress parse = this->cache->parseAddress(this->inst->getVal());
+                assert(insts.find(parse) != insts.end());  // must exist
+                insts.erase(parse);
+            }
+            this->inst = nullptr;
+        }
         return true;
     }
     

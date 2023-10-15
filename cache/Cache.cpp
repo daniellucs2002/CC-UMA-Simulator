@@ -19,11 +19,9 @@ Cache::Cache(int cachesize, int associativity, int blocksize) {
 CacheAddress Cache::parseAddress(unsigned int address) const {
     int blockOffsetBits = std::log2(this->blocksize);
     int setIndexBits = std::log2(this->set);
-    unsigned int blockOffsetMask = (1 << blockOffsetBits) - 1;
     unsigned int setIndexMask = ((1 << setIndexBits) - 1) << blockOffsetBits;
 
     CacheAddress result;
-    result.blockOffset = address & blockOffsetMask;
     result.setIndex = (address & setIndexMask) >> blockOffsetBits;
     result.tag = address >> (blockOffsetBits + setIndexBits);
     return result;

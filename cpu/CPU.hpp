@@ -43,5 +43,6 @@ public:
     void setHalt(int halt) {this->halt = halt;}
 
     std::shared_ptr<Trace> getInst() {return this->inst;}
+    void setInst(std::shared_ptr<Trace> inst) {this->inst = inst;}
 
 };

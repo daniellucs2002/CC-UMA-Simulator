@@ -24,9 +24,9 @@ private:
     std::weak_ptr<CacheController> controller;
     std::weak_ptr<CPU> cpu;
 
+public:
     CacheAddress parseAddress(unsigned int address) const;
 
-public:
     Cache(int cachesize, int associativity, int blocksize);
 
     unsigned int detect_addr(unsigned int address) const;

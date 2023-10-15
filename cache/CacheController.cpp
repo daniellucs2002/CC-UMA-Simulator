@@ -30,5 +30,11 @@ void CacheController::receiveReply(const Message& msg) {
     } else {
         this->cache->cpu.lock()->setHalt(0);
         this->cache->cpu.lock()->getInst()->execute(this->cache);
+        if (this->cache->cpu.lock()->getInst()->identify() == 0 || this->cache->cpu.lock()->getInst()->identify() == 1) {
+            CacheAddress parse = this->cache->parseAddress(this->cache->cpu.lock()->getInst()->getVal());
+            assert(insts.find(parse) != insts.end());  // must exist
+            insts.erase(parse);
+        }
+        this->cache->cpu.lock()->setInst(nullptr);
     }
 }
