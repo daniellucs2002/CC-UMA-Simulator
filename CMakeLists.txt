@@ -16,8 +16,8 @@ set(SOURCES
     bus/Bus.cpp
     cache/Cache.cpp
     cache/CacheSet.cpp
-    cache/CacheLine.cpp
     cache/CacheController.cpp
+    states/MesiState.cpp
 )
 
 add_executable(coherence ${SOURCES})

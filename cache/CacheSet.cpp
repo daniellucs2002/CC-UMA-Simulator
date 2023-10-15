@@ -1,5 +1,6 @@
 #include "CacheSet.hpp"
 #include "config.hpp"
+#include "states/MesiState.hpp"
 #include <algorithm>
 #include <cassert>
 
@@ -7,6 +8,8 @@ CacheSet::CacheSet(int assoc) {
     this->associativity = assoc;
     for (int i = 0; i < this->associativity; ++i)
         this->lines.push_back(CacheLine());
+    for (int i = 0; i < this->associativity; ++i)
+        this->lines[i].setState(InvalidState::getInstance());
 }
 
 bool CacheSet::is_full() const {
