@@ -1,6 +1,7 @@
 #include "CacheLine.hpp"
 #include <vector>
 #include <deque>
+#include <memory>
 
 class Cache;
 
@@ -25,4 +26,7 @@ public:
     bool need_write_back(unsigned int tag) const;  // write back or just discard
     
     int load_line(unsigned int tag, bool isWrite = false);
+
+    // used to evaluate global situation
+    std::shared_ptr<CacheLine> is_hit_msg(unsigned int tag) const;
 };

@@ -1,8 +1,12 @@
 #pragma once
 #include <string>
+#include <memory>
 #include <unordered_set>
+#include "protocols/protocol.hpp"
 
 extern int cpunums;
+
+extern std::shared_ptr<CacheCoherenceProtocol> protocol;
 
 namespace CacheConfig {
     extern int cachesize;

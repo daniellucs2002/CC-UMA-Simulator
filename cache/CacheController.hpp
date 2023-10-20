@@ -6,6 +6,8 @@ class Cache;
 class Bus;
 
 class CacheController : public std::enable_shared_from_this<CacheController> {
+    friend class Bus;
+private:
     int id;
     std::shared_ptr<Bus> bus;
     std::shared_ptr<Cache> cache;

@@ -14,13 +14,37 @@ void Bus::sendReply(const Message& msg) {
 }
 
 void Bus::propagateRequests() {
+    std::vector<bool> flags(cpunums);  // caches hold a copy or not
+    std::vector<std::shared_ptr<CacheLine>> caches(cpunums);
+
     while (!requestMessages.empty()) {
         Message msg = requestMessages.front();
         requestMessages.pop();
 
+        for (int i = 0; i < cpunums; ++i) {
+            flags[i] = false;
+            caches[i] = nullptr;
+        }
+
         // new request, stayInBus can decide upon status of other caches
-        if (msg.stayInBus == -1)
-            msg.stayInBus = TimeConfig::LoadBlockFromMem + TimeConfig::CacheHit;
+        // change state of caches and decide the latency till reply
+        if (msg.stayInBus == -1) {
+            msg.stayInBus = TimeConfig::CacheHit;
+            // msg.stayInBus = TimeConfig::LoadBlockFromMem + TimeConfig::CacheHit;
+            // step1: collect information about caches that hold a copy
+            for (int i = 0; i < cpunums; ++i) {
+                std::shared_ptr<Cache> ptr = this->caches[i]->cache;
+                caches[i] = ptr->getSets()[msg.address.setIndex].is_hit_msg(msg.address.tag);
+                if (caches[i] != nullptr)
+                    flags[i] = true;
+            }
+
+            // step2: decide new states and apply changes
+
+            // step3: calculate time in bus before sending reply
+            
+            msg.stayInBus += protocol->ProcessMsg(msg, flags, caches);
+        }
         msg.stayInBus--;
         this->sendReply(msg);
 

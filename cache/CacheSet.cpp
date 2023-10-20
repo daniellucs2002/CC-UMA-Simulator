@@ -3,6 +3,9 @@
 #include "states/MesiState.hpp"
 #include <algorithm>
 #include <cassert>
+#include <memory>
+
+class CacheLine;
 
 CacheSet::CacheSet(int assoc) {
     this->associativity = assoc;
@@ -31,6 +34,13 @@ bool CacheSet::is_hit(unsigned int tag, bool isWrite) {
             return true;
         }
     return false;
+}
+
+std::shared_ptr<CacheLine> CacheSet::is_hit_msg(unsigned int tag) const {
+    for (int i = 0; i < this->associativity; ++i)
+        if (this->lines[i].is_valid && this->lines[i].tag == tag)
+            return std::make_shared<CacheLine>(this->lines[i]);
+    return nullptr;
 }
 
 // define const functions when necessary

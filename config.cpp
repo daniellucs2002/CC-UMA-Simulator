@@ -3,6 +3,8 @@
 int cpunums = 4;
 std::unordered_set<CacheAddress> insts;
 
+std::shared_ptr<CacheCoherenceProtocol> protocol;
+
 namespace CacheConfig {
     int cachesize = 1024;
     int associativity = 1;

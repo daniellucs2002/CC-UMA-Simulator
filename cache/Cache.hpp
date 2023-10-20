@@ -46,4 +46,8 @@ public:
     void setCPU(const std::shared_ptr<CPU>& cpu) {
         this->cpu = cpu;
     }
+
+    std::vector<CacheSet>& getSets() {
+        return this->sets;
+    }
 };

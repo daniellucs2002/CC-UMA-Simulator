@@ -7,6 +7,8 @@
 #include "cache/CacheController.hpp"
 #include "config.hpp"
 
+#include "protocols/MesiProtocol.hpp"
+
 int main(int argc, char* argv[]) {
     assert(argc == 7);
 
@@ -17,7 +19,7 @@ int main(int argc, char* argv[]) {
     std::string filename = std::string(argv[2]) + "_";  // e.g. _0.data
 
     if (strcmp(argv[1], "MESI") == 0) {
-	
+        protocol = std::make_shared<MESICacheCoherenceProtocol>();
     } else if (strcmp(argv[1], "Dragon") == 0) {
 
     } else {
