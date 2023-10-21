@@ -51,15 +51,21 @@ unsigned int Cache::write_addr(unsigned int address) {
     }
 }
 
-unsigned int Cache::detect_addr(unsigned int address) const {
+unsigned int Cache::detect_addr(unsigned int address, bool isWrite) const {
     CacheAddress parse = this->parseAddress(address);
-    if (this->sets[parse.setIndex].is_hit_readonly(parse.tag)) {
+    if (this->sets[parse.setIndex].is_hit_readonly(parse.tag, isWrite)) {
+        // write hit need to be further processed
+
         return TimeConfig::CacheHit;
     } else {
         // send request message into bus on cache miss
         Message msg;
         msg.senderId = this->controller.lock()->getId();
         msg.address = parse;  msg.stayInBus = -1;
+        if (isWrite)
+            msg.type = WRITE_REQ;
+        else
+            msg.type = READ_REQ;
         this->controller.lock()->sendRequest(msg);
         return std::numeric_limits<int>::max();
     }

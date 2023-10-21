@@ -18,7 +18,7 @@ unsigned int Instruction0::detect(std::shared_ptr<Cache> cache) const {
 }
 
 unsigned int Instruction1::detect(std::shared_ptr<Cache> cache) const {
-    return cache->detect_addr(this->address);
+    return cache->detect_addr(this->address, true);
 }
 
 unsigned int Instruction2::detect(std::shared_ptr<Cache> cache) const {

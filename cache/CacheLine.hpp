@@ -20,4 +20,6 @@ public:
 
     State* getState() const { return state; }
     void setState(State* newState) { state = newState; }
+
+    void setValid(bool newBit) { is_valid = newBit; }
 };

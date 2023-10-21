@@ -29,7 +29,7 @@ public:
 
     Cache(int cachesize, int associativity, int blocksize);
 
-    unsigned int detect_addr(unsigned int address) const;
+    unsigned int detect_addr(unsigned int address, bool isWrite = false) const;
 
     // input: address to be visited
     // output: cycles needed for completion

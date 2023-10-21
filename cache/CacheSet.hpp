@@ -22,7 +22,7 @@ public:
     bool is_hit(unsigned int tag, bool isWrite = false);
 
     // doesn't change the state of the system, just peek
-    bool is_hit_readonly(unsigned int tag) const;  // cache hit or not
+    bool is_hit_readonly(unsigned int tag, bool isWrite = false) const;  // cache hit or not
     bool need_write_back(unsigned int tag) const;  // write back or just discard
     
     int load_line(unsigned int tag, bool isWrite = false);

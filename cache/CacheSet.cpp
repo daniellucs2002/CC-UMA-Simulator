@@ -44,10 +44,14 @@ std::shared_ptr<CacheLine> CacheSet::is_hit_msg(unsigned int tag) const {
 }
 
 // define const functions when necessary
-bool CacheSet::is_hit_readonly(unsigned int tag) const {
+// write hit but is_dirty=false, we still need to send the message
+bool CacheSet::is_hit_readonly(unsigned int tag, bool isWrite) const {
     for (int i = 0; i < this->associativity; ++i)
-        if (this->lines[i].is_valid && this->lines[i].tag == tag)
+        if (this->lines[i].is_valid && this->lines[i].tag == tag) {
+            if (isWrite && this->lines[i].is_dirty == false)
+                return false;
             return true;
+        }
     return false;
     // several possible cases in cache miss
     // if (!is_full()) {

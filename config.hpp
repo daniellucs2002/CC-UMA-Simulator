@@ -45,13 +45,15 @@ namespace std {
 }
 
 enum MessageType {
-
+    READ_REQ,
+    WRITE_REQ,  // for MESI protocol
 };
 
 struct Message {
     int senderId;
     int stayInBus;
     CacheAddress address;
+    MessageType type;
 };
 
 extern std::unordered_set<CacheAddress> insts;
