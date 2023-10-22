@@ -1,8 +1,5 @@
 #pragma once
 #include "State.hpp"
-#include "cache/CacheLine.hpp"
-
-class CacheLine;
 
 class InvalidState : public State {
 public:

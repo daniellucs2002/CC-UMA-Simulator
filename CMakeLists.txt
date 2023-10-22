@@ -18,6 +18,7 @@ set(SOURCES
     cache/CacheSet.cpp
     cache/CacheController.cpp
     states/MesiState.cpp
+    states/MoesiState.cpp
 )
 
 add_executable(coherence ${SOURCES})

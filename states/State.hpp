@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include "cache/CacheLine.hpp"
 
 class State {
 public:
