@@ -16,8 +16,10 @@ private:
 
     bool is_full() const;
 
+    int id;  // id of cpu that it belongs to
+
 public:
-    CacheSet(int assoc);
+    CacheSet(int assoc, int id);
     // write hit or miss needs to set the dirty bit
     bool is_hit(unsigned int tag, bool isWrite = false);
 
@@ -28,5 +30,5 @@ public:
     int load_line(unsigned int tag, bool isWrite = false);
 
     // used to evaluate global situation
-    std::shared_ptr<CacheLine> is_hit_msg(unsigned int tag) const;
+    CacheLine* is_hit_msg(unsigned int tag);
 };

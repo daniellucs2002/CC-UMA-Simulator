@@ -15,7 +15,7 @@ void Bus::sendReply(const Message& msg) {
 
 void Bus::propagateRequests() {
     std::vector<bool> flags(cpunums);  // caches hold a copy or not
-    std::vector<std::shared_ptr<CacheLine>> caches(cpunums);
+    std::vector<CacheLine*> caches(cpunums);
 
     while (!requestMessages.empty()) {
         Message msg = requestMessages.front();

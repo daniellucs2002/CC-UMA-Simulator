@@ -7,7 +7,8 @@
 
 class CacheLine;
 
-CacheSet::CacheSet(int assoc) {
+CacheSet::CacheSet(int assoc, int id) {
+    this->id = id;
     this->associativity = assoc;
     for (int i = 0; i < this->associativity; ++i)
         this->lines.push_back(CacheLine());
@@ -36,10 +37,10 @@ bool CacheSet::is_hit(unsigned int tag, bool isWrite) {
     return false;
 }
 
-std::shared_ptr<CacheLine> CacheSet::is_hit_msg(unsigned int tag) const {
+CacheLine* CacheSet::is_hit_msg(unsigned int tag) {
     for (int i = 0; i < this->associativity; ++i)
         if (this->lines[i].is_valid && this->lines[i].tag == tag)
-            return std::make_shared<CacheLine>(this->lines[i]);
+            return &this->lines[i];
     return nullptr;
 }
 
@@ -85,6 +86,12 @@ int CacheSet::load_line(unsigned int tag, bool isWrite) {
                     this->lines[i].is_dirty = true;
                 // assume data has been loaded into cache from memory, no write back
                 this->idx.push_front(i);
+                if (protocol->intToStringMap.find(this->id) == protocol->intToStringMap.end()) {
+                    assert(false);
+                } else {
+                    this->lines[i].setState(protocol->intToStringMap[this->id]);
+                    protocol->intToStringMap.erase(this->id);
+                }
                 return TimeConfig::LoadBlockFromMem;
             }
     } else {  // evict a line based on LRU policy
@@ -98,6 +105,12 @@ int CacheSet::load_line(unsigned int tag, bool isWrite) {
         if (isWrite)
             this->lines[evict_idx].is_dirty = true;
         this->idx.push_front(evict_idx);
+        if (protocol->intToStringMap.find(this->id) == protocol->intToStringMap.end()) {
+            assert(false);
+        } else {
+            this->lines[evict_idx].setState(protocol->intToStringMap[this->id]);
+            protocol->intToStringMap.erase(this->id);
+        }
         if (writeback)
             return TimeConfig::LoadBlockFromMem + TimeConfig::WriteBackMem;
         else

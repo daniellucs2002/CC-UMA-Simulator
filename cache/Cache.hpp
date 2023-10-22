@@ -24,10 +24,12 @@ private:
     std::weak_ptr<CacheController> controller;
     std::weak_ptr<CPU> cpu;
 
+    int id;
+
 public:
     CacheAddress parseAddress(unsigned int address) const;
 
-    Cache(int cachesize, int associativity, int blocksize);
+    Cache(int cachesize, int associativity, int blocksize, int id);
 
     unsigned int detect_addr(unsigned int address, bool isWrite = false) const;
 

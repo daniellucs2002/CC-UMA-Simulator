@@ -15,7 +15,7 @@ CPU::CPU(int id, string filename) {
 
     // create the unique_ptr to L1 data cache
     this->cache = std::make_shared<Cache>(CacheConfig::cachesize,
-        CacheConfig::associativity, CacheConfig::blocksize);
+        CacheConfig::associativity, CacheConfig::blocksize, this->cpu_id);
 }
 
 bool CPU::update(unsigned long now) {

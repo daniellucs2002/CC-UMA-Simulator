@@ -22,4 +22,6 @@ public:
     void setState(State* newState) { state = newState; }
 
     void setValid(bool newBit) { is_valid = newBit; }
+    bool getDirty() { return this->is_dirty; }
+    void setDirty(bool newDirty) { this->is_dirty = newDirty; }
 };

@@ -6,14 +6,15 @@
 
 using namespace std;
 
-Cache::Cache(int cachesize, int associativity, int blocksize) {
+Cache::Cache(int cachesize, int associativity, int blocksize, int id) {
+    this->id = id;
     this->cachesize = cachesize;  // 1024
     this->associativity = associativity;  // 1
     this->blocksize = blocksize;  // 16
     this->set = this->cachesize / (associativity * blocksize);  // 64
 
     for (int i = 0; i < this->set; ++i)
-        sets.push_back(CacheSet(this->associativity));
+        sets.push_back(CacheSet(this->associativity, this->id));
 }
 
 CacheAddress Cache::parseAddress(unsigned int address) const {
