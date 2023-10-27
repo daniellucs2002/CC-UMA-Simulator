@@ -1,6 +1,7 @@
 #include "CacheSet.hpp"
 #include "config.hpp"
 #include "states/MesiState.hpp"
+#include "states/MoesiState.hpp"
 #include <algorithm>
 #include <cassert>
 #include <memory>
@@ -78,6 +79,10 @@ bool CacheSet::need_write_back(unsigned int tag) const {
 
 // on cache miss, read or write
 int CacheSet::load_line(unsigned int tag, bool isWrite) {
+
+    if (isWrite)
+        assert(protocol->intToStringMap[this->id] == ModifiedState::getInstance());
+
     if (!is_full()) {  // pick an invalid line
         for (int i = 0; i < this->associativity; ++i)
             if (this->lines[i].is_valid == false) {

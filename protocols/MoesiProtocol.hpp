@@ -1,6 +1,7 @@
 #pragma once
 #include "protocol.hpp"
 #include "config.hpp"
+#include "states/MoesiState.hpp"
 #include <cassert>
 #include <iostream>
 #include <algorithm>
@@ -21,11 +22,18 @@ public:
                 cnt++;
         
         // whether or not Modified state exists in the system
-        bool flag = false;  // modified exists or not
+        bool has_modified = false;  // modified exists or not
         for (int i = 0; i < cpunums; ++i)
             if (flags[i] && caches[i]->getState() == ModifiedState::getInstance()) {
-                assert(!flag && cnt == 1);  // at most one modified state
-                flag = true;
+                assert(!has_modified && cnt == 1);  // at most one modified state
+                has_modified = true;
+            }
+
+        bool has_owned = false;
+        for (int i = 0; i < cpunums; ++i)
+            if (flags[i] && caches[i]->getState() == OwnedState::getInstance()) {
+                assert(!has_owned && !has_modified);  // no modified allowed
+                has_owned = true;
             }
 
         // start the logic of MOESI state transition
@@ -44,8 +52,10 @@ public:
                     for (int i = 0; i < cpunums; ++i)
                         if (flags[i]) {
                             cnt--;
-                            if (flag)
+                            if (has_modified)
                                 assert(caches[i]->getState() == ModifiedState::getInstance());
+                            if (has_owned)
+                                assert(caches[i]->getState() == OwnedState::getInstance());
                             caches[i]->setState(InvalidState::getInstance());
                             caches[i]->setValid(false);
                         }
@@ -55,11 +65,12 @@ public:
                     // sending a cache block with N words to another cache takes 2N cycles
                     return CacheConfig::blocksize / 2;
                 } else {
-                    assert(!flag);  // Modified cannot exist
+                    assert(!has_modified);  // Modified cannot exist
                     for (int i = 0; i < cpunums; ++i)
                         if (flags[i]) {
                             cnt--;
-                            assert(caches[i]->getState() == SharedState::getInstance());
+                            assert(caches[i]->getState() == SharedState::getInstance() ||
+                                caches[i]->getState() == OwnedState::getInstance());
                             caches[i]->setState(InvalidState::getInstance());
                             caches[i]->setValid(false);
                         }
@@ -67,36 +78,43 @@ public:
                     intToStringMap.insert(std::make_pair(msg.senderId, ModifiedState::getInstance()));
                     return CacheConfig::blocksize / 2;
                 }
-            } else {  // READ_REQ
+            } else {  // READ_REQ, which can reveal the benefits of MOESI
                 if (cnt == 0) {  // Invalid to Exclusive, state cannot be set currently
                     intToStringMap.insert(std::make_pair(msg.senderId, ExclusiveState::getInstance()));
                 } else if (cnt == 1) {
-                    for (int i = 0; i < cpunums; ++i)
-                        if (flags[i]) {
-                            cnt--;
-                            if (flag)
-                                assert(caches[i]->getState() == ModifiedState::getInstance());
-                            caches[i]->setState(SharedState::getInstance());
-                            // if Modified, reset the dirty bit to false
-                            if (flag) {
-                                assert(caches[i]->getDirty());
-                                caches[i]->setDirty(false);
+                    // four cases: M O E S
+                    if (has_modified) {  // M
+                        for (int i = 0; i < cpunums; ++i)
+                            if (flags[i] && caches[i]->getState() == ModifiedState::getInstance()) {
+                                caches[i]->setState(OwnedState::getInstance());
+                                assert(caches[i]->getDirty());  // the dirty bit should be kept
                             }
-                        }
-                    assert(cnt == 0);
-                    intToStringMap.insert(std::make_pair(msg.senderId, SharedState::getInstance()));
-
-                    // Modified to Shared needs writing back to memory, so max(..., ...)
-                    if (flag)
-                        return std::max(CacheConfig::blocksize / 2, TimeConfig::WriteBackMem);
-                    else
+                        intToStringMap.insert(std::make_pair(msg.senderId, SharedState::getInstance()));
+                        return CacheConfig::blocksize / 2;  // improvement: no writing back in this case
+                    } else if (has_owned) {  // O
+                        intToStringMap.insert(std::make_pair(msg.senderId, SharedState::getInstance()));
                         return CacheConfig::blocksize / 2;
-                } else {
-                    assert(!flag);  // Modified cannot exist
+                    } else {  // E and S
+                        for (int i = 0; i < cpunums; ++i)
+                            if (flags[i]) {
+                                cnt--;
+                                assert(caches[i]->getState() == ExclusiveState::getInstance() ||
+                                    caches[i]->getState() == SharedState::getInstance());
+                                // set the state to shared anyway
+                                caches[i]->setState(SharedState::getInstance());
+                                assert(!caches[i]->getDirty());
+                            }
+                        assert(cnt == 0);
+                        intToStringMap.insert(std::make_pair(msg.senderId, SharedState::getInstance()));
+                        return CacheConfig::blocksize / 2;
+                    }
+                } else {  // only shared, or shared + owned
+                    assert(!has_modified);  // Modified cannot exist
                     for (int i = 0; i < cpunums; ++i)
                         if (flags[i]) {
                             cnt--;
-                            assert(caches[i]->getState() == SharedState::getInstance());
+                            assert(caches[i]->getState() == SharedState::getInstance() ||
+                                caches[i]->getState() == OwnedState::getInstance());
                         }
                     assert(cnt == 0);
                     intToStringMap.insert(std::make_pair(msg.senderId, SharedState::getInstance()));
@@ -106,12 +124,28 @@ public:
         } else {
             assert(flags[msg.senderId]);
             assert(msg.type == WRITE_REQ);
-            if (cnt == 1) {  // Exclusive to Modified, PrWr/-
-                assert(caches[msg.senderId]->getState() == ExclusiveState::getInstance() || caches[msg.senderId]->getState() == SharedState::getInstance());
+            if (caches[msg.senderId]->getState() == ExclusiveState::getInstance()) {
+                // Exclusive to Modified, PrWr/-
+                assert(cnt == 1);
                 caches[msg.senderId]->setState(ModifiedState::getInstance());
-            } else {  // Shared to Modified, PrWr/BusRdX
-                assert(caches[msg.senderId]->getState() == SharedState::getInstance());
+            } else if (caches[msg.senderId]->getState() == SharedState::getInstance()) {
                 caches[msg.senderId]->setState(ModifiedState::getInstance());
+                // also invalidate all the other cache lines
+                for (int i = 0; i < cpunums; ++i)
+                    if (i != msg.senderId && flags[i]) {
+                        assert(caches[i]->getState() == SharedState::getInstance() ||
+                            caches[i]->getState() == OwnedState::getInstance());
+                        if (caches[i]->getState() == OwnedState::getInstance())
+                            assert(has_owned && caches[i]->getDirty());
+                        caches[i]->setState(InvalidState::getInstance());
+                        caches[i]->setValid(false);
+                    }
+                // attention: OwnedState is responsible for writing dirty block back into memory
+                // if (has_owned)
+                //     return TimeConfig::WriteBackMem;
+            } else if (caches[msg.senderId]->getState() == OwnedState::getInstance()) {
+                caches[msg.senderId]->setState(ModifiedState::getInstance());
+                assert(caches[msg.senderId]->getDirty());
                 // also invalidate all the other cache lines
                 for (int i = 0; i < cpunums; ++i)
                     if (i != msg.senderId && flags[i]) {
@@ -119,6 +153,8 @@ public:
                         caches[i]->setState(InvalidState::getInstance());
                         caches[i]->setValid(false);
                     }
+            } else {
+                assert(false);  // never reach here
             }
             return 0;
         }
