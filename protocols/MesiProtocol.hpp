@@ -3,7 +3,7 @@
 #include "config.hpp"
 #include <cassert>
 #include <iostream>
-#include <cmath>
+#include <algorithm>
 
 struct Message;
 
@@ -88,7 +88,7 @@ public:
 
                     // Modified to Shared needs writing back to memory, so max(..., ...)
                     if (flag)
-                        return max(CacheConfig::blocksize / 2, TimeConfig::WriteBackMem);
+                        return std::max(CacheConfig::blocksize / 2, TimeConfig::WriteBackMem);
                     else
                         return CacheConfig::blocksize / 2;
                 } else {

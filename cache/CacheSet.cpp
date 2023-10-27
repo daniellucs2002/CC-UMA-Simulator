@@ -76,17 +76,22 @@ bool CacheSet::need_write_back(unsigned int tag) const {
     return false;
 }
 
+// on cache miss, read or write
 int CacheSet::load_line(unsigned int tag, bool isWrite) {
     if (!is_full()) {  // pick an invalid line
         for (int i = 0; i < this->associativity; ++i)
             if (this->lines[i].is_valid == false) {
+                assert(this->lines[i].getState() == InvalidState::getInstance());
                 this->lines[i].is_valid = true;
                 this->lines[i].tag = tag;
                 if (isWrite)
                     this->lines[i].is_dirty = true;
+                else
+                    this->lines[i].is_dirty = false;
                 // assume data has been loaded into cache from memory, no write back
                 this->idx.push_front(i);
                 if (protocol->intToStringMap.find(this->id) == protocol->intToStringMap.end()) {
+                    // gotta find instructions to set new state
                     assert(false);
                 } else {
                     this->lines[i].setState(protocol->intToStringMap[this->id]);
@@ -104,6 +109,8 @@ int CacheSet::load_line(unsigned int tag, bool isWrite) {
         this->lines[evict_idx].tag = tag;
         if (isWrite)
             this->lines[evict_idx].is_dirty = true;
+        else
+            this->lines[evict_idx].is_dirty = false;
         this->idx.push_front(evict_idx);
         if (protocol->intToStringMap.find(this->id) == protocol->intToStringMap.end()) {
             assert(false);
