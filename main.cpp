@@ -9,6 +9,7 @@
 
 #include "protocols/MesiProtocol.hpp"
 #include "protocols/MoesiProtocol.hpp"
+#include "protocols/DragonProtocol.hpp"
 
 int main(int argc, char* argv[]) {
     assert(argc == 7);
@@ -24,7 +25,7 @@ int main(int argc, char* argv[]) {
     } else if (strcmp(argv[1], "MOESI") == 0) {
         protocol = std::make_shared<MOESICacheCoherenceProtocol>();
     } else if (strcmp(argv[1], "Dragon") == 0) {
-
+        protocol = std::make_shared<DragonCacheCoherenceProtocol>();
     } else {
         std::cerr << "Invalid protocol selected" << std::endl;
         return 1;
