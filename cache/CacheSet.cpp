@@ -2,6 +2,7 @@
 #include "config.hpp"
 #include "states/MesiState.hpp"
 #include "states/MoesiState.hpp"
+#include "states/DragonState.hpp"
 #include <algorithm>
 #include <cassert>
 #include <memory>
@@ -50,8 +51,13 @@ CacheLine* CacheSet::is_hit_msg(unsigned int tag) {
 bool CacheSet::is_hit_readonly(unsigned int tag, bool isWrite) const {
     for (int i = 0; i < this->associativity; ++i)
         if (this->lines[i].is_valid && this->lines[i].tag == tag) {
-            if (isWrite && this->lines[i].is_dirty == false)
-                return false;
+            if (protocol->identify() < 1) {  // MESI protocol
+                if (isWrite && this->lines[i].is_dirty == false)
+                    return false;
+            } else {  // Dragon & MOESI Protocol
+                if (isWrite)
+                    return false;
+            }
             return true;
         }
     return false;
@@ -72,7 +78,9 @@ bool CacheSet::is_hit_readonly(unsigned int tag, bool isWrite) const {
 bool CacheSet::need_write_back(unsigned int tag) const {
     if (is_full()) {
         int evict_idx = this->idx.back();
-        return this->lines[evict_idx].is_dirty;
+        // return this->lines[evict_idx].is_dirty;
+        return this->lines[evict_idx].is_dirty &&
+            this->lines[evict_idx].is_valid && this->lines[evict_idx].tag != tag;
     }
     return false;
 }
@@ -80,8 +88,13 @@ bool CacheSet::need_write_back(unsigned int tag) const {
 // on cache miss, read or write
 int CacheSet::load_line(unsigned int tag, bool isWrite) {
 
+    // in the Dragon protocol, can also be Shared Modified state
     if (isWrite)
-        assert(protocol->intToStringMap[this->id] == ModifiedState::getInstance());
+        assert(protocol->intToStringMap[this->id] == ModifiedState::getInstance() ||
+            protocol->intToStringMap[this->id] == DragonSharedModified::getInstance());
+    
+    if (protocol->intToStringMap[this->id] == DragonSharedClean::getInstance())
+        assert(!isWrite);
 
     if (!is_full()) {  // pick an invalid line
         for (int i = 0; i < this->associativity; ++i)
@@ -100,6 +113,8 @@ int CacheSet::load_line(unsigned int tag, bool isWrite) {
                     assert(false);
                 } else {
                     this->lines[i].setState(protocol->intToStringMap[this->id]);
+                    if (protocol->intToStringMap[this->id] == DragonSharedClean::getInstance())
+                        assert(!this->lines[i].getDirty());
                     protocol->intToStringMap.erase(this->id);
                 }
                 return TimeConfig::LoadBlockFromMem;
@@ -121,6 +136,8 @@ int CacheSet::load_line(unsigned int tag, bool isWrite) {
             assert(false);
         } else {
             this->lines[evict_idx].setState(protocol->intToStringMap[this->id]);
+            if (protocol->intToStringMap[this->id] == DragonSharedClean::getInstance())
+                assert(!this->lines[evict_idx].getDirty());
             protocol->intToStringMap.erase(this->id);
         }
         if (writeback)

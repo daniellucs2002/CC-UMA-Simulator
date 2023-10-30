@@ -13,6 +13,8 @@ public:
     // state to be set when the cache line has been allocated
     // std::map<int, State*> intToStringMap;
 
+    int identify() const override {return 2;}
+
     int ProcessMsg(struct Message msg, std::vector<bool>& flags, std::vector<CacheLine*> caches) {
 
         // how many caches in the system that hold a data copy
@@ -71,6 +73,8 @@ public:
                             cnt--;
                             assert(caches[i]->getState() == DragonSharedClean::getInstance() ||
                                 caches[i]->getState() == DragonSharedModified::getInstance());
+                            if (caches[i]->getState() == DragonSharedClean::getInstance())
+                                assert(!caches[i]->getDirty());
                             caches[i]->setState(DragonInvalid::getInstance());
                             caches[i]->setValid(false);
                         }
@@ -115,6 +119,8 @@ public:
                             cnt--;
                             assert(caches[i]->getState() == DragonSharedClean::getInstance() ||
                                 caches[i]->getState() == DragonSharedModified::getInstance());
+                            if (caches[i]->getState() == DragonSharedClean::getInstance())
+                                assert(!caches[i]->getDirty());
                         }
                     assert(cnt == 0);
                     intToStringMap.insert(std::make_pair(msg.senderId, DragonSharedClean::getInstance()));
@@ -129,6 +135,7 @@ public:
                 assert(cnt == 1);
                 caches[msg.senderId]->setState(DragonModified::getInstance());
             } else if (caches[msg.senderId]->getState() == DragonSharedClean::getInstance()) {
+                assert(!caches[msg.senderId]->getDirty());
                 caches[msg.senderId]->setState(DragonModified::getInstance());
                 // also invalidate all the other cache lines
                 for (int i = 0; i < cpunums; ++i)
@@ -137,6 +144,8 @@ public:
                             caches[i]->getState() == DragonSharedModified::getInstance());
                         if (caches[i]->getState() == DragonSharedModified::getInstance())
                             assert(has_owned && caches[i]->getDirty());
+                        else
+                            assert(!caches[i]->getDirty());
                         caches[i]->setState(DragonInvalid::getInstance());
                         caches[i]->setValid(false);
                     }
@@ -149,10 +158,13 @@ public:
                 // also invalidate all the other cache lines
                 for (int i = 0; i < cpunums; ++i)
                     if (i != msg.senderId && flags[i]) {
-                        assert(caches[i]->getState() == DragonSharedClean::getInstance());
+                        assert(caches[i]->getState() == DragonSharedClean::getInstance() &&
+                            !caches[i]->getDirty());
                         caches[i]->setState(DragonInvalid::getInstance());
                         caches[i]->setValid(false);
                     }
+            } else if (caches[msg.senderId]->getState() == DragonModified::getInstance()) {
+                // do nothing, fall through
             } else {
                 assert(false);  // never reach here
             }

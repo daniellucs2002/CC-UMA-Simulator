@@ -18,4 +18,5 @@ namespace TimeConfig {
     int CacheHit = 1;
     int LoadBlockFromMem = 100;
     int WriteBackMem = 100;
+    int BusUpdate = 2;
 }

@@ -21,6 +21,7 @@ namespace TimeConfig {
     extern int CacheHit;
     extern int LoadBlockFromMem;
     extern int WriteBackMem;
+    extern int BusUpdate;
 }
 
 struct CacheAddress {

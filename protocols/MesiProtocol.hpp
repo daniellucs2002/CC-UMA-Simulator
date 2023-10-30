@@ -12,6 +12,8 @@ public:
     // state to be set when the cache line has been allocated
     // std::map<int, State*> intToStringMap;
 
+    int identify() const override {return 0;}
+
     int ProcessMsg(struct Message msg, std::vector<bool>& flags, std::vector<CacheLine*> caches) {
 
         // how many caches in the system that hold a data copy

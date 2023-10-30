@@ -16,4 +16,6 @@ public:
     // @flags: record the distribution of cached copies
     // @caches: pointer to the cache line that holds a copy of the data
     virtual int ProcessMsg(struct Message msg, std::vector<bool>& flags, std::vector<CacheLine*> caches) = 0;
+
+    virtual int identify() const = 0;
 };
