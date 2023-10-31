@@ -12,7 +12,7 @@ namespace CacheConfig {
     int wordsize = 4;  // for every memory reference
 }
 
-std::string root_path = "/home/lujunchen/cs4223/";
+std::string root_path = "/home/lujunchen/CC-UMA-Simulator/data/";
 
 namespace TimeConfig {
     int CacheHit = 1;
