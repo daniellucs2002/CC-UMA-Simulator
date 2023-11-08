@@ -20,3 +20,5 @@ namespace TimeConfig {
     int WriteBackMem = 100;
     int BusUpdate = 2;
 }
+
+std::vector<std::shared_ptr<Statistics>> cpu_stats;

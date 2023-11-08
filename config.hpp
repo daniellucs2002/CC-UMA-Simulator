@@ -3,6 +3,7 @@
 #include <memory>
 #include <unordered_set>
 #include "protocols/protocol.hpp"
+#include "stats.hpp"
 
 extern int cpunums;
 
@@ -58,3 +59,5 @@ struct Message {
 };
 
 extern std::unordered_set<CacheAddress> insts;
+
+extern std::vector<std::shared_ptr<Statistics>> cpu_stats;

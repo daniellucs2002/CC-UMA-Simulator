@@ -85,7 +85,8 @@ bool CPU::update(unsigned long now) {
     }
     
     // print out the end of execution time for the current core
-    cout << "[CPU " + to_string(this->cpu_id) + "] Finished at cycle " << now << endl;
+    // cout << "[CPU " + to_string(this->cpu_id) + "] Finished at cycle " << now << endl;
+    cpu_stats[this->cpu_id]->SetCount("sum_execution_time", now);
     inFile.close();
     return false;
 }

@@ -1,6 +1,6 @@
 # Specify the source directory and build directory
-SRC_DIR := /home/lujunchen/cs4223/src
-BUILD_DIR := /home/lujunchen/cs4223/src/build
+SRC_DIR := /home/lujunchen/CC-UMA-Simulator
+BUILD_DIR := /home/lujunchen/CC-UMA-Simulator/build
 
 # Default target
 all: cmake-build

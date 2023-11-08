@@ -46,6 +46,8 @@ int main(int argc, char* argv[]) {
         auto controller = std::make_shared<CacheController>(i, bus, cpu->read_cache());
         cpu->read_cache()->setController(controller);
         bus->registerCache(controller);
+        // one Statistics class for each cpu core
+        cpu_stats.emplace_back(std::make_shared<Statistics>());
     }
 
     while (true) {
@@ -56,6 +58,13 @@ int main(int argc, char* argv[]) {
     }
 
     std::cout << "End of simulation at cycle " << timer->currentTime() << "..." << std::endl;
+
+    // print all the statistics
+    for (int i = 0; i < cpunums; ++i) {  // print cpu[i]
+        std::cout << "=== Statistics about CPU " << i << " ===" << std::endl;
+        // sum of execution time
+        std::cout << "Finished at cycle " << cpu_stats[i]->GetCount("sum_execution_time") << endl;
+    }
 
     return 0;
 }
