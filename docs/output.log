@@ -1,0 +1,275 @@
+===blackscholes===
+
+End of simulation at cycle 84469365...
+=== Statistics about CPU 0 ===
+Finished at cycle 83029816
+Compute Cycles Number is 10430314
+Load Number: 1489888 Store Number: 1007461
+Idle Cycles Number is 72599502
+Data Cache Miss Rate: 19%
+=== Statistics about CPU 1 ===
+Finished at cycle 82738342
+Compute Cycles Number is 10383276
+Load Number: 1485857 Store Number: 1004611
+Idle Cycles Number is 72355066
+Data Cache Miss Rate: 19%
+=== Statistics about CPU 2 ===
+Finished at cycle 84469365
+Compute Cycles Number is 10430338
+Load Number: 1492629 Store Number: 1016428
+Idle Cycles Number is 74039027
+Data Cache Miss Rate: 20%
+=== Statistics about CPU 3 ===
+Finished at cycle 83202113
+Compute Cycles Number is 10394904
+Load Number: 1493736 Store Number: 1009391
+Idle Cycles Number is 72807209
+Data Cache Miss Rate: 19%
+=== Statistics about the Bus ===
+Data Traffic: 6332496 bytes
+Number of Invalidations: 203
+private access : public access = 5.36012
+
+End of simulation at cycle 83603890...
+=== Statistics about CPU 0 ===
+Finished at cycle 82194097
+Compute Cycles Number is 10430314
+Load Number: 1489888 Store Number: 1007461
+Idle Cycles Number is 71763783
+Data Cache Miss Rate: 19%
+=== Statistics about CPU 1 ===
+Finished at cycle 81864780
+Compute Cycles Number is 10383276
+Load Number: 1485857 Store Number: 1004611
+Idle Cycles Number is 71481504
+Data Cache Miss Rate: 19%
+=== Statistics about CPU 2 ===
+Finished at cycle 83603890
+Compute Cycles Number is 10430338
+Load Number: 1492629 Store Number: 1016428
+Idle Cycles Number is 73173552
+Data Cache Miss Rate: 20%
+=== Statistics about CPU 3 ===
+Finished at cycle 82336638
+Compute Cycles Number is 10394904
+Load Number: 1493736 Store Number: 1009391
+Idle Cycles Number is 71941734
+Data Cache Miss Rate: 19%
+=== Statistics about the Bus ===
+Data Traffic: 6286288 bytes
+Number of Invalidations: 210
+private access : public access = 5.4238
+
+End of simulation at cycle 84687680...
+=== Statistics about CPU 0 ===
+Finished at cycle 83289095
+Compute Cycles Number is 10430314
+Load Number: 1489888 Store Number: 1007461
+Idle Cycles Number is 72858781
+Data Cache Miss Rate: 19%
+=== Statistics about CPU 1 ===
+Finished at cycle 83025151
+Compute Cycles Number is 10383276
+Load Number: 1485857 Store Number: 1004611
+Idle Cycles Number is 72641875
+Data Cache Miss Rate: 19%
+=== Statistics about CPU 2 ===
+Finished at cycle 84687680
+Compute Cycles Number is 10430338
+Load Number: 1492629 Store Number: 1016428
+Idle Cycles Number is 74257342
+Data Cache Miss Rate: 20%
+=== Statistics about CPU 3 ===
+Finished at cycle 83482832
+Compute Cycles Number is 10394904
+Load Number: 1493736 Store Number: 1009391
+Idle Cycles Number is 73087928
+Data Cache Miss Rate: 19%
+=== Statistics about the Bus ===
+Data Traffic: 6421620 bytes
+Number of Updates: 1033
+private access : public access = 5.33643
+
+===fluidanimate===
+
+End of simulation at cycle 79586954...
+=== Statistics about CPU 0 ===
+Finished at cycle 76212981
+Compute Cycles Number is 11337782
+Load Number: 1832392 Store Number: 744111
+Idle Cycles Number is 64875199
+Data Cache Miss Rate: 17%
+=== Statistics about CPU 1 ===
+Finished at cycle 67758030
+Compute Cycles Number is 11290799
+Load Number: 1821846 Store Number: 585998
+Idle Cycles Number is 56467231
+Data Cache Miss Rate: 16%
+=== Statistics about CPU 2 ===
+Finished at cycle 79586954
+Compute Cycles Number is 11337671
+Load Number: 1838008 Store Number: 766181
+Idle Cycles Number is 68249283
+Data Cache Miss Rate: 18%
+=== Statistics about CPU 3 ===
+Finished at cycle 67348333
+Compute Cycles Number is 11301515
+Load Number: 1832174 Store Number: 579291
+Idle Cycles Number is 56046818
+Data Cache Miss Rate: 16%
+=== Statistics about the Bus ===
+Data Traffic: 1842192 bytes
+Number of Invalidations: 1217
+private access : public access = 5.28521
+
+End of simulation at cycle 79565834...
+=== Statistics about CPU 0 ===
+Finished at cycle 76204371
+Compute Cycles Number is 11337782
+Load Number: 1832392 Store Number: 744111
+Idle Cycles Number is 64866589
+Data Cache Miss Rate: 17%
+=== Statistics about CPU 1 ===
+Finished at cycle 67744083
+Compute Cycles Number is 11290799
+Load Number: 1821846 Store Number: 585998
+Idle Cycles Number is 56453284
+Data Cache Miss Rate: 16%
+=== Statistics about CPU 2 ===
+Finished at cycle 79565834
+Compute Cycles Number is 11337671
+Load Number: 1838008 Store Number: 766181
+Idle Cycles Number is 68228163
+Data Cache Miss Rate: 18%
+=== Statistics about CPU 3 ===
+Finished at cycle 67330471
+Compute Cycles Number is 11301515
+Load Number: 1832174 Store Number: 579291
+Idle Cycles Number is 56028956
+Data Cache Miss Rate: 16%
+=== Statistics about the Bus ===
+Data Traffic: 1845232 bytes
+Number of Invalidations: 1246
+private access : public access = 5.27995
+
+End of simulation at cycle 79591513...
+=== Statistics about CPU 0 ===
+Finished at cycle 76180639
+Compute Cycles Number is 11337782
+Load Number: 1832392 Store Number: 744111
+Idle Cycles Number is 64842857
+Data Cache Miss Rate: 17%
+=== Statistics about CPU 1 ===
+Finished at cycle 67719855
+Compute Cycles Number is 11290799
+Load Number: 1821846 Store Number: 585998
+Idle Cycles Number is 56429056
+Data Cache Miss Rate: 16%
+=== Statistics about CPU 2 ===
+Finished at cycle 79591513
+Compute Cycles Number is 11337671
+Load Number: 1838008 Store Number: 766181
+Idle Cycles Number is 68253842
+Data Cache Miss Rate: 18%
+=== Statistics about CPU 3 ===
+Finished at cycle 67307832
+Compute Cycles Number is 11301515
+Load Number: 1832174 Store Number: 579291
+Idle Cycles Number is 56006317
+Data Cache Miss Rate: 16%
+=== Statistics about the Bus ===
+Data Traffic: 1853384 bytes
+Number of Updates: 1805
+private access : public access = 5.26771
+
+===bodytrack===
+
+End of simulation at cycle 72422886...
+=== Statistics about CPU 0 ===
+Finished at cycle 71564746
+Compute Cycles Number is 17729254
+Load Number: 2380720 Store Number: 889412
+Idle Cycles Number is 53835492
+Data Cache Miss Rate: 13%
+=== Statistics about CPU 1 ===
+Finished at cycle 70083869
+Compute Cycles Number is 17120545
+Load Number: 2388005 Store Number: 899247
+Idle Cycles Number is 52963324
+Data Cache Miss Rate: 13%
+=== Statistics about CPU 2 ===
+Finished at cycle 20304503
+Compute Cycles Number is 17556877
+Load Number: 74523 Store Number: 43175
+Idle Cycles Number is 2747626
+Data Cache Miss Rate: 18%
+=== Statistics about CPU 3 ===
+Finished at cycle 72422886
+Compute Cycles Number is 17140113
+Load Number: 2416052 Store Number: 908867
+Idle Cycles Number is 55282773
+Data Cache Miss Rate: 14%
+=== Statistics about the Bus ===
+Data Traffic: 2220576 bytes
+Number of Invalidations: 845
+private access : public access = 9.45012
+
+End of simulation at cycle 72485909...
+=== Statistics about CPU 0 ===
+Finished at cycle 71551770
+Compute Cycles Number is 17729254
+Load Number: 2380720 Store Number: 889412
+Idle Cycles Number is 53822516
+Data Cache Miss Rate: 13%
+=== Statistics about CPU 1 ===
+Finished at cycle 70068474
+Compute Cycles Number is 17120545
+Load Number: 2388005 Store Number: 899247
+Idle Cycles Number is 52947929
+Data Cache Miss Rate: 13%
+=== Statistics about CPU 2 ===
+Finished at cycle 20306309
+Compute Cycles Number is 17556877
+Load Number: 74523 Store Number: 43175
+Idle Cycles Number is 2749432
+Data Cache Miss Rate: 18%
+=== Statistics about CPU 3 ===
+Finished at cycle 72485909
+Compute Cycles Number is 17140113
+Load Number: 2416052 Store Number: 908867
+Idle Cycles Number is 55345796
+Data Cache Miss Rate: 14%
+=== Statistics about the Bus ===
+Data Traffic: 2215920 bytes
+Number of Invalidations: 859
+private access : public access = 9.64845
+
+End of simulation at cycle 72501973...
+=== Statistics about CPU 0 ===
+Finished at cycle 71539243
+Compute Cycles Number is 17729254
+Load Number: 2380720 Store Number: 889412
+Idle Cycles Number is 53809989
+Data Cache Miss Rate: 13%
+=== Statistics about CPU 1 ===
+Finished at cycle 70056218
+Compute Cycles Number is 17120545
+Load Number: 2388005 Store Number: 899247
+Idle Cycles Number is 52935673
+Data Cache Miss Rate: 13%
+=== Statistics about CPU 2 ===
+Finished at cycle 20306291
+Compute Cycles Number is 17556877
+Load Number: 74523 Store Number: 43175
+Idle Cycles Number is 2749414
+Data Cache Miss Rate: 18%
+=== Statistics about CPU 3 ===
+Finished at cycle 72501973
+Compute Cycles Number is 17140113
+Load Number: 2416052 Store Number: 908867
+Idle Cycles Number is 55361860
+Data Cache Miss Rate: 14%
+=== Statistics about the Bus ===
+Data Traffic: 2216944 bytes
+Number of Updates: 1252
+private access : public access = 9.6913
