@@ -51,6 +51,16 @@ CacheLine* CacheSet::is_hit_msg(unsigned int tag) {
 bool CacheSet::is_hit_readonly(unsigned int tag, bool isWrite) const {
     for (int i = 0; i < this->associativity; ++i)
         if (this->lines[i].is_valid && this->lines[i].tag == tag) {
+            // record the cache hit event
+            cpu_stats[this->id]->Increment("cache_hit");  // number of cache hit
+            // define public and private data accesses
+            if (this->lines[i].getState() == ModifiedState::getInstance() ||
+                this->lines[i].getState() == ExclusiveState::getInstance()) {
+                cpu_stats[cpunums]->Increment("private");
+            } else {
+                cpu_stats[cpunums]->Increment("public");
+            }
+
             if (protocol->identify() < 1) {  // MESI protocol
                 if (isWrite && this->lines[i].is_dirty == false)
                     return false;

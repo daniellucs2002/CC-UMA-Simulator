@@ -29,12 +29,14 @@ bool CPU::update(unsigned long now) {
             CacheAddress parse = this->cache->parseAddress(this->inst->getVal());
             if (insts.find(parse) != insts.end()) {
                 // which means the CacheAddress is still conflicting
+                // cpu_stats[this->cpu_id]->Increment("idle_cycles");
                 return true;
             } else {
                 // issue the stored instruction before reading another line from file
                 insts.insert(parse);
                 this->halt = this->inst->detect(this->cache);
                 --this->halt;
+                // cpu_stats[this->cpu_id]->Increment("idle_cycles");
                 if (this->halt == 0 && this->inst.get() != nullptr) {
                     this->inst->execute(this->cache);
                     insts.erase(parse);
@@ -46,19 +48,28 @@ bool CPU::update(unsigned long now) {
         if (getline(inFile, line)) {
             auto instruction = Trace::createInstruction(line);
             if (instruction->identify() == 0 || instruction->identify() == 1) {
+                if (instruction->identify() == 0) {
+                    cpu_stats[this->cpu_id]->Increment("load_number");
+                } else {
+                    cpu_stats[this->cpu_id]->Increment("store_number");
+                }
                 CacheAddress parse = this->cache->parseAddress(instruction->getVal());
                 if (insts.find(parse) != insts.end()) {
                     // in case of conflicting CacheAddress, halt the current core and store the instruction
                     this->halt = 0;
                     this->inst = instruction;
+                    // cpu_stats[this->cpu_id]->Increment("idle_cycles");
                     return true;
                 }
                 insts.insert(parse);
+            } else {
+                cpu_stats[this->cpu_id]->AddMany("compute_cycles", instruction->getVal());
             }
             this->halt = instruction->detect(this->cache);
             // record the instruction into the object for later execution
             this->inst = instruction;
             --this->halt;
+            // cpu_stats[this->cpu_id]->Increment("idle_cycles");
             if (this->halt == 0 && this->inst.get() != nullptr) {
                 this->inst->execute(this->cache);
                 if (this->inst->identify() == 0 || this->inst->identify() == 1) {
@@ -72,6 +83,7 @@ bool CPU::update(unsigned long now) {
         }
     } else {
         --this->halt;
+        // cpu_stats[this->cpu_id]->Increment("idle_cycles");
         if (this->halt == 0 && this->inst.get() != nullptr) {
             this->inst->execute(this->cache);
             if (this->inst->identify() == 0 || this->inst->identify() == 1) {

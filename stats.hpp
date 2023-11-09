@@ -24,6 +24,15 @@ public:
         }
     }
 
+    void AddMany(const std::string& key, const int val) {
+        auto it = this->findCounter(key);
+        if (it != this->counters.end()) {
+            it->second += val;
+        } else {
+            this->counters.emplace_back(key, val);
+        }
+    }
+
     int GetCount(const std::string& key) {
         auto it = findCounter(key);
         return it != counters.end() ? it->second : 0;

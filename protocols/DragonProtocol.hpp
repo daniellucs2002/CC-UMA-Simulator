@@ -67,6 +67,9 @@ public:
                     assert(cnt == 0);
                     intToStringMap.insert(std::make_pair(msg.senderId, DragonSharedModified::getInstance()));
 
+                    cpu_stats[cpunums]->Increment("update");  // number of updates
+                    cpu_stats[cpunums]->AddMany("data_traffic", CacheConfig::blocksize + 4);  // amount of data traffic
+
                     // sending a cache block with N words to another cache takes 2N cycles
                     // BusUpdate takes only two cycles; first send the whole block, then bus update
                     return CacheConfig::blocksize / 2 + TimeConfig::BusUpdate;
@@ -74,7 +77,6 @@ public:
                     assert(!has_modified);  // Modified cannot exist
                     for (int i = 0; i < cpunums; ++i)
                         if (flags[i]) {
-                            cnt--;
                             assert(caches[i]->getState() == DragonSharedClean::getInstance() ||
                                 caches[i]->getState() == DragonSharedModified::getInstance());
                             if (caches[i]->getState() == DragonSharedClean::getInstance())
@@ -86,8 +88,11 @@ public:
                             }
                             assert(!caches[i]->getDirty());
                         }
-                    assert(cnt == 0);
                     intToStringMap.insert(std::make_pair(msg.senderId, DragonSharedModified::getInstance()));
+
+                    cpu_stats[cpunums]->Increment("update");  // number of updates
+                    cpu_stats[cpunums]->AddMany("data_traffic", CacheConfig::blocksize + 4 * cnt);  // amount of data traffic
+
                     return CacheConfig::blocksize / 2 + TimeConfig::BusUpdate;
                 }
             } else {  // READ_REQ
@@ -102,9 +107,11 @@ public:
                                 assert(caches[i]->getDirty());  // the dirty bit should be kept
                             }
                         intToStringMap.insert(std::make_pair(msg.senderId, DragonSharedClean::getInstance()));
+                        cpu_stats[cpunums]->AddMany("data_traffic", CacheConfig::blocksize);  // amount of data traffic
                         return CacheConfig::blocksize / 2;  // improvement: no writing back in this case
                     } else if (has_SharedModified) {  // O
                         intToStringMap.insert(std::make_pair(msg.senderId, DragonSharedClean::getInstance()));
+                        cpu_stats[cpunums]->AddMany("data_traffic", CacheConfig::blocksize);  // amount of data traffic
                         return CacheConfig::blocksize / 2;
                     } else {  // E and S
                         for (int i = 0; i < cpunums; ++i)
@@ -118,6 +125,7 @@ public:
                             }
                         assert(cnt == 0);
                         intToStringMap.insert(std::make_pair(msg.senderId, DragonSharedClean::getInstance()));
+                        cpu_stats[cpunums]->AddMany("data_traffic", CacheConfig::blocksize);  // amount of data traffic
                         return CacheConfig::blocksize / 2;
                     }
                 } else {  // only shared, or shared + owned
@@ -132,6 +140,7 @@ public:
                         }
                     assert(cnt == 0);
                     intToStringMap.insert(std::make_pair(msg.senderId, DragonSharedClean::getInstance()));
+                    cpu_stats[cpunums]->AddMany("data_traffic", CacheConfig::blocksize);  // amount of data traffic
                     return CacheConfig::blocksize / 2;
                 }
             }
@@ -162,6 +171,10 @@ public:
                         }
                     caches[msg.senderId]->setState(DragonSharedModified::getInstance());
                     assert(!caches[msg.senderId]->getDirty());
+
+                    cpu_stats[cpunums]->Increment("update");  // number of updates
+                    cpu_stats[cpunums]->AddMany("data_traffic", 4 * (cnt - 1));  // amount of data traffic
+
                     return TimeConfig::BusUpdate;
                 }
             } else if (caches[msg.senderId]->getState() == DragonSharedModified::getInstance()) {
@@ -175,6 +188,8 @@ public:
                             assert(caches[i]->getState() == DragonSharedClean::getInstance());
                             assert(!caches[i]->getDirty());
                         }
+                    cpu_stats[cpunums]->Increment("update");  // number of updates
+                    cpu_stats[cpunums]->AddMany("data_traffic", 4 * (cnt - 1));  // amount of data traffic
                     return TimeConfig::BusUpdate;
                 }
             } else if (caches[msg.senderId]->getState() == DragonModified::getInstance()) {

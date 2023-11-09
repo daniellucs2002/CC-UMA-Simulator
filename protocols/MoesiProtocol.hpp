@@ -64,6 +64,9 @@ public:
                     assert(cnt == 0);
                     intToStringMap.insert(std::make_pair(msg.senderId, ModifiedState::getInstance()));
 
+                    cpu_stats[cpunums]->AddMany("data_traffic", CacheConfig::blocksize);  // amount of data traffic
+                    cpu_stats[cpunums]->Increment("invalidation");  // number of invalidations
+
                     // sending a cache block with N words to another cache takes 2N cycles
                     return CacheConfig::blocksize / 2;
                 } else {
@@ -78,6 +81,10 @@ public:
                         }
                     assert(cnt == 0);
                     intToStringMap.insert(std::make_pair(msg.senderId, ModifiedState::getInstance()));
+
+                    cpu_stats[cpunums]->AddMany("data_traffic", CacheConfig::blocksize);  // amount of data traffic
+                    cpu_stats[cpunums]->Increment("invalidation");  // number of invalidations
+
                     return CacheConfig::blocksize / 2;
                 }
             } else {  // READ_REQ, which can reveal the benefits of MOESI
@@ -92,9 +99,11 @@ public:
                                 assert(caches[i]->getDirty());  // the dirty bit should be kept
                             }
                         intToStringMap.insert(std::make_pair(msg.senderId, SharedState::getInstance()));
+                        cpu_stats[cpunums]->AddMany("data_traffic", CacheConfig::blocksize);  // amount of data traffic
                         return CacheConfig::blocksize / 2;  // improvement: no writing back in this case
                     } else if (has_owned) {  // O
                         intToStringMap.insert(std::make_pair(msg.senderId, SharedState::getInstance()));
+                        cpu_stats[cpunums]->AddMany("data_traffic", CacheConfig::blocksize);  // amount of data traffic
                         return CacheConfig::blocksize / 2;
                     } else {  // E and S
                         for (int i = 0; i < cpunums; ++i)
@@ -108,6 +117,7 @@ public:
                             }
                         assert(cnt == 0);
                         intToStringMap.insert(std::make_pair(msg.senderId, SharedState::getInstance()));
+                        cpu_stats[cpunums]->AddMany("data_traffic", CacheConfig::blocksize);  // amount of data traffic
                         return CacheConfig::blocksize / 2;
                     }
                 } else {  // only shared, or shared + owned
@@ -120,6 +130,7 @@ public:
                         }
                     assert(cnt == 0);
                     intToStringMap.insert(std::make_pair(msg.senderId, SharedState::getInstance()));
+                    cpu_stats[cpunums]->AddMany("data_traffic", CacheConfig::blocksize);  // amount of data traffic
                     return CacheConfig::blocksize / 2;
                 }
             }
@@ -142,6 +153,7 @@ public:
                         caches[i]->setState(InvalidState::getInstance());
                         caches[i]->setValid(false);
                     }
+                cpu_stats[cpunums]->Increment("invalidation");  // number of invalidations
                 // attention: OwnedState is responsible for writing dirty block back into memory
                 // if (has_owned)
                 //     return TimeConfig::WriteBackMem;
@@ -155,6 +167,7 @@ public:
                         caches[i]->setState(InvalidState::getInstance());
                         caches[i]->setValid(false);
                     }
+                cpu_stats[cpunums]->Increment("invalidation");  // number of invalidations
             } else if (caches[msg.senderId]->getState() == ModifiedState::getInstance()) {
                 // do nothing, fall through
             } else {
